@@ -1,0 +1,27 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: jewelcart_postgres
+    environment:
+      POSTGRES_DB: jewelcart_db
+      POSTGRES_USER: jewelcart_user
+      POSTGRES_PASSWORD: jewelcart_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - jewelcart_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U jewelcart_user -d jewelcart_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  jewelcart_network:
+    driver: bridge

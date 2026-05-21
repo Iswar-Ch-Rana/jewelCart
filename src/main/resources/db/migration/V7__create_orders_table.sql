@@ -13,5 +13,5 @@ CREATE TABLE orders
     updated_at       TIMESTAMP          NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX idx_orders_user_id ON orders (user_id);
+CREATE INDEX idx_orders_user_created ON orders (user_id, created_at DESC);
 CREATE INDEX idx_orders_status ON orders (status);

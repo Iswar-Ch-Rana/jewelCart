@@ -4,7 +4,7 @@ CREATE TABLE payments
     payment_id        VARCHAR(50) UNIQUE NOT NULL,
     order_id          BIGINT             NOT NULL REFERENCES orders (id),
     amount            DECIMAL(14, 2)     NOT NULL,
-    currency          VARCHAR(50)        NOT NULL DEFAULT 'INR',
+    currency          currency_code      NOT NULL DEFAULT 'INR',
     status            payment_status     NOT NULL DEFAULT 'INITIATED',
     gateway           payment_gateway    NOT NULL DEFAULT 'RAZORPAY',
     gateway_reference VARCHAR(100),

@@ -6,7 +6,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate  # Flyway manages schema, JPA only validates
+      ddl-auto: create  # Flyway manages schema, JPA only validates
     show-sql: false        # true only when debugging
     open-in-view: false    # never true — causes N+1 problems
     properties:

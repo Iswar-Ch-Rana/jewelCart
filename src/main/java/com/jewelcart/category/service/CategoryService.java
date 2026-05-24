@@ -121,7 +121,18 @@ public class CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Category not found with id: " + id
                 ));
-        category.setIsActive(false);    // soft delete
+
+        // deactivate this category and all its children recursively
+        deactivateRecursively(category);
+    }
+
+    private void deactivateRecursively(Category category) {
+        category.setIsActive(false);
+        // load children and deactivate each one
+        List<Category> children = categoryRepository.findByParentId(category.getId());
+        for (Category child : children) {
+            deactivateRecursively(child);   // recursive call
+        }
     }
 
     // convert entity → flat response DTO

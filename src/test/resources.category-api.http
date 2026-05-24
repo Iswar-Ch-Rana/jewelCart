@@ -1,0 +1,31 @@
+### Create root category
+POST http://localhost:8080/api/v1/categories
+Content-Type: application/json
+
+{
+  "name": "Jewellery",
+  "displayOrder": 1
+}
+
+### Create child category
+POST http://localhost:8080/api/v1/categories
+Content-Type: application/json
+
+{
+  "name": "Gold Plated",
+  "parentId": 1,
+  "displayOrder": 1
+}
+
+### Create grandchild
+POST http://localhost:8080/api/v1/categories
+Content-Type: application/json
+
+{
+  "name": "Necklaces",
+  "parentId": 2,
+  "displayOrder": 1
+}
+
+### Get tree
+GET http://localhost:8080/api/v1/categories

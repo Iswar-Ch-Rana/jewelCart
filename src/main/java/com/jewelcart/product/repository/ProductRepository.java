@@ -17,6 +17,9 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    // 0. sku uniqueness check for createProduct
+    boolean existsBySku(String sku);
+
     // 1. by vendor — paginated
     @Query(
             value = "SELECT p FROM Product p WHERE p.isActive = true AND p.vendor.id = :vendorId",

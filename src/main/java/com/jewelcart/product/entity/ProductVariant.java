@@ -21,20 +21,20 @@ public class ProductVariant {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "variant_name")
+    @Column(name = "variant_name", length = 100)
     private String variantName;
 
-    @Column(name = "size")
+    @Column(name = "size", length = 20)
     private String size;
 
-    @Column(name = "color")
+    @Column(name = "color", length = 50)
     private String color;
 
     @Builder.Default
-    @Column(name = "additional_price", nullable = false)
+    @Column(name = "additional_price", nullable = false, precision = 14, scale = 2)
     private BigDecimal additionalPrice = BigDecimal.valueOf(0);
 
-    @Column(name = "sku_suffix")
+    @Column(name = "sku_suffix", length = 20)
     private String skuSuffix;
 
     @Builder.Default

@@ -1,0 +1,24 @@
+### Create product
+POST http://localhost:8080/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Gold Necklace",
+  "sku": "NK001",
+  "vendorId": 1,
+  "categoryId": 3,
+  "basePrice": 1500.00,
+  "sellingPrice": 1299.00,
+  "metalType": "GOLD_PLATED",
+  "occasion": "WEDDING",
+  "gender": "WOMEN"
+}
+
+### Search by name
+GET http://localhost:8080/api/v1/products/search?name=gold
+
+### Featured products
+GET http://localhost:8080/api/v1/products/featured
+
+### Filter by metal and price
+GET http://localhost:8080/api/v1/products/filter?metalType=GOLD_PLATED&minPrice=1000&maxPrice=5000

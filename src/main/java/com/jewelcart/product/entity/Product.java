@@ -8,6 +8,8 @@ import com.jewelcart.common.enums.OccasionType;
 import com.jewelcart.vendor.entity.Vendor;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -59,7 +61,8 @@ public class Product extends BaseEntity {
     private BigDecimal gstRate = new BigDecimal("3.00");
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "metal_type")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "metal_type", columnDefinition = "metal_type")
     private MetalType metalType;
 
     @Column(name = "weight_grams", precision = 10, scale = 3)
@@ -72,11 +75,13 @@ public class Product extends BaseEntity {
     private String stoneType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "occasion")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "occasion", columnDefinition = "occasion_type")
     private OccasionType occasion;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "gender")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
+    @Column(name = "gender", columnDefinition = "gender_type")
     private GenderType gender;
 
     @Builder.Default

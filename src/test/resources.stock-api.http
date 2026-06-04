@@ -1,0 +1,16 @@
+### Initialize stock
+POST http://localhost:8080/api/v1/stock
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "variantId": null,
+  "quantity": 50,
+  "lowStockThreshold": 5
+}
+
+### Get stock by product
+GET http://localhost:8080/api/v1/stock/product/1
+
+### Low stock items
+GET http://localhost:8080/api/v1/stock/low-stock

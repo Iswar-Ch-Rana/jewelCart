@@ -7,6 +7,8 @@ import com.jewelcart.common.enums.MetalType;
 import com.jewelcart.common.enums.OccasionType;
 import com.jewelcart.common.exception.DuplicateResourceException;
 import com.jewelcart.common.exception.ResourceNotFoundException;
+import com.jewelcart.inventory.dto.InitializeStockRequest;
+import com.jewelcart.inventory.service.StockService;
 import com.jewelcart.product.dto.*;
 import com.jewelcart.product.entity.Product;
 import com.jewelcart.product.entity.ProductImage;
@@ -31,6 +33,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final VendorRepository vendorRepository;
     private final CategoryRepository categoryRepository;
+    private final StockService stockService;
 
     // ─── WRITE OPERATIONS ────────────────────────────────────────────────────
 
@@ -71,6 +74,14 @@ public class ProductService {
                 .build();
 
         product = productRepository.save(product);
+
+        stockService.initializeStock(new InitializeStockRequest(
+                product.getId(),
+                null,           // no variant for base product
+                0,              // initial quantity = 0
+                5               // default low stock threshold
+        ));
+
         return toResponse(product);
     }
 

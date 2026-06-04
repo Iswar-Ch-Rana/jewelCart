@@ -60,4 +60,12 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(error("An unexpected error occurred"));
     }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ApiResponse<Void>> handleInsufficientStock(
+            InsufficientStockException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)  // 409 — state conflict
+                .body(error(ex.getMessage()));
+    }
 }

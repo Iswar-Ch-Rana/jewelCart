@@ -7,7 +7,9 @@ import com.jewelcart.auth.service.AuthService;
 import com.jewelcart.common.dto.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,7 +30,7 @@ public class AuthController {
             @RequestBody @Valid RegisterRequest request
     ) {
         AuthResponse authResponse = authService.register(request);
-        return ResponseEntity.ok(success("User registered successfully", authResponse));
+        return ResponseEntity.status(HttpStatus.CREATED).body(success("User registered successfully", authResponse));
     }
 
     @PostMapping("/login")
@@ -37,6 +39,15 @@ public class AuthController {
     ) {
         AuthResponse authResponse = authService.login(request);
         return ResponseEntity.ok(success("User logged in successfully", authResponse));
+    }
+
+    @PostMapping("/admin/create-vendor")
+    @PreAuthorize("hasRole('ADMIN')")   // only ADMIN can create vendors
+    public ResponseEntity<ApiResponse<AuthResponse>> createVendor(
+            @RequestBody @Valid RegisterRequest request
+    ) {
+        AuthResponse response = authService.registerVendor(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(success("Vendor created successfully", response));
     }
 
 }

@@ -5,6 +5,7 @@ import com.jewelcart.auth.dto.LoginRequest;
 import com.jewelcart.auth.dto.RegisterRequest;
 import com.jewelcart.auth.entity.User;
 import com.jewelcart.auth.repository.UserRepository;
+import com.jewelcart.common.enums.UserRole;
 import com.jewelcart.common.exception.DuplicateResourceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,7 +38,7 @@ public class AuthService {
                 .lastName(request.lastName())
                 .passwordHash(passwordEncoder.encode(request.password()))
                 .phone(request.phone())
-                .role(request.role())
+                .role(UserRole.CUSTOMER)
                 .build();
 
         user = userRepository.save(user);
@@ -47,7 +48,6 @@ public class AuthService {
         return new AuthResponse(token, "Bearer", user.getEmail(), user.getRole());
     }
 
-    @Transactional(readOnly = true)
     public AuthResponse login(LoginRequest request) {
         // AuthenticationManager handles:
         // 1. load user by email
@@ -65,6 +65,28 @@ public class AuthService {
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow();
 
+        String token = jwtService.generateToken(user);
+        return new AuthResponse(token, "Bearer", user.getEmail(), user.getRole());
+    }
+
+    @Transactional
+    public AuthResponse registerVendor(RegisterRequest request) {
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            throw new DuplicateResourceException(
+                    "Email already registered: " + request.email());
+        }
+
+        User user = User.builder()
+                .email(request.email())
+                .passwordHash(passwordEncoder.encode(request.password()))
+                .firstName(request.firstName())
+                .lastName(request.lastName())
+                .phone(request.phone())
+                .role(UserRole.VENDOR)    // ← VENDOR role, not CUSTOMER
+                .isActive(true)
+                .build();
+
+        user = userRepository.save(user);
         String token = jwtService.generateToken(user);
         return new AuthResponse(token, "Bearer", user.getEmail(), user.getRole());
     }

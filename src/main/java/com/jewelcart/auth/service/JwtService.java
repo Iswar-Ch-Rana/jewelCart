@@ -1,11 +1,11 @@
 package com.jewelcart.auth.service;
 
+import com.jewelcart.auth.entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +26,11 @@ public class JwtService {
 
     // ─── GENERATE TOKEN ───────────────────────────────────────────────────────
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .subject(userDetails.getUsername())
-                .claim("role", userDetails.getAuthorities()
-                        .stream()
-                        .findFirst()
-                        .map(GrantedAuthority::getAuthority)
-                        .orElse("ROLE_CUSTOMER"))
+                .subject(user.getEmail())
+                .claim("userId", user.getId())
+                .claim("role", user.getRole().name())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())

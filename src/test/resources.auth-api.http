@@ -1,4 +1,4 @@
-### 1. Register admin user
+### Register
 POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
@@ -6,11 +6,10 @@ Content-Type: application/json
   "email": "admin@jewelcart.com",
   "password": "Admin@123",
   "firstName": "Admin",
-  "lastName": "User",
-  "role": "ADMIN"
+  "lastName": "User"
 }
 
-### 2. Login
+### Login
 POST http://localhost:8080/api/v1/auth/login
 Content-Type: application/json
 
@@ -19,9 +18,76 @@ Content-Type: application/json
   "password": "Admin@123"
 }
 
-### 3. Protected endpoint WITHOUT token
+### Test protected endpoint with token
+GET http://localhost:8080/api/v1/vendors
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBqZXdlbGNhcnQuY29tIiwidXNlcklkIjoxLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3ODA3NjQ4OTMsImV4cCI6MTc4MDg1MTI5M30.exwrS_Q0yngaBBfuzChy-5IAxqk8sUqj988E1dGohUKwU3ZQfQoAr8IYfIY95Qhn
+
+### Test without token
 GET http://localhost:8080/api/v1/vendors
 
-### 4. Protected endpoint WITH token (paste token from step 2)
+### 1. Login as admin (created by DataInitializer)
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@jewelcart.com",
+  "password": "admin123456"
+}
+
+
+### Test WITH token — should work
 GET http://localhost:8080/api/v1/vendors
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBqZXdlbGNhcnQuY29tIiwicm9sZSI6IlJPTEVfQURNSU4iLCJpYXQiOjE3ODA3NjEyOTgsImV4cCI6MTc4MDg0NzY5OH0.gkjCzTJXQxrYjhubZUFXMypBcq7YcYay70lls9OV0eH8fmCcZae0mQSNWM5QITsd
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBqZXdlbGNhcnQuY29tIiwidXNlcklkIjoyLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3ODA3NjU0NjEsImV4cCI6MTc4MDg1MTg2MX0.GyTbDTp5pFSPpjrKgzscEJR7ekluLxg9gHoy_GzUPm8xJLzt-0eh9pYXWasqCMIj
+
+### Test WITHOUT token — should get 403
+GET http://localhost:8080/api/v1/vendors
+
+### Register new customer
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "email": "customer@jewelcart.com",
+  "password": "customer123456",
+  "firstName": "Test",
+  "lastName": "Customer"
+}
+
+### 1. Login as customer
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "customer@jewelcart.com",
+  "password": "customer123456"
+}
+
+
+### Create vendor (as admin)
+POST http://localhost:8080/api/v1/auth/admin/create-vendor
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBqZXdlbGNhcnQuY29tIiwidXNlcklkIjoyLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3ODA3NjU4NTgsImV4cCI6MTc4MDg1MjI1OH0.BrQyqBuLTXKck60PY7dlLL7n1J5gEn4vB-zVUE1pDaJ8hTY0u2woJLqFUfjc1Gry
+Content-Type: application/json
+
+{
+  "email": "vendor@jewelcart.com",
+  "password": "vendor123456",
+  "firstName": "Arihant",
+  "lastName": "Jewellers"
+}
+
+### 1. Access protected endpoint WITH admin token
+GET http://localhost:8080/api/v1/vendors
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBqZXdlbGNhcnQuY29tIiwidXNlcklkIjoyLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3ODA3NjU4NTgsImV4cCI6MTc4MDg1MjI1OH0.BrQyqBuLTXKck60PY7dlLL7n1J5gEn4vB-zVUE1pDaJ8hTY0u2woJLqFUfjc1Gry
+
+### 2. Access WITHOUT token — should get 403
+GET http://localhost:8080/api/v1/vendors
+
+### 3. Customer tries to create vendor — should get 403
+POST http://localhost:8080/api/v1/auth/admin/create-vendor
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjdXN0b21lckBqZXdlbGNhcnQuY29tIiwidXNlcklkIjozLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3ODA3NjYwMzksImV4cCI6MTc4MDg1MjQzOX0.QchKm8hfoFwfbahexYahLILI_jIWC0ekzZLC4BKmKbauUBpbmqXEh_wGzsseJ53w
+Content-Type: application/json
+
+{
+  "email": "hacker@jewelcart.com",
+  "password": "hack123456"
+}

@@ -1,9 +1,8 @@
 package com.jewelcart.auth.dto;
 
-import com.jewelcart.common.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record RegisterRequest(
         @NotBlank(message = "Email is required")
@@ -11,14 +10,12 @@ public record RegisterRequest(
         String email,
 
         @NotBlank(message = "Password is required")
+        @Size(min = 8, message = "Password must be at least 8 characters")
         String password,
 
         String firstName,   // optional — can fill in profile later
         String lastName,    // optional
 
-        String phone,       // optional
-
-        @NotNull(message = "Role is required")
-        UserRole role
+        String phone
 ) {
 }

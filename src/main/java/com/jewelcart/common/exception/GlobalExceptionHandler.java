@@ -3,6 +3,7 @@ package com.jewelcart.common.exception;
 import com.jewelcart.common.dto.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -68,4 +69,13 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)  // 409 — state conflict
                 .body(error(ex.getMessage()));
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Void>> handleBadCredentials(
+            BadCredentialsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(error("Invalid email or password"));
+    }
+
 }

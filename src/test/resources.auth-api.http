@@ -62,6 +62,14 @@ Content-Type: application/json
   "password": "customer123456"
 }
 
+### 1. Login as customer
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "vendor@jewelcart.com",
+  "password": "vendor123456"
+}
 
 ### Create vendor (as admin)
 POST http://localhost:8080/api/v1/auth/admin/create-vendor
@@ -91,3 +99,37 @@ Content-Type: application/json
   "email": "hacker@jewelcart.com",
   "password": "hack123456"
 }
+
+
+### 1. Customer tries to create vendor — should be 403
+POST http://localhost:8080/api/v1/vendors
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjdXN0b21lckBqZXdlbGNhcnQuY29tIiwidXNlcklkIjozLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3ODA3NjYwMzksImV4cCI6MTc4MDg1MjQzOX0.QchKm8hfoFwfbahexYahLILI_jIWC0ekzZLC4BKmKbauUBpbmqXEh_wGzsseJ53w
+Content-Type: application/json
+
+{
+  "name": "Test Vendor",
+  "brandName": "Test",
+  "email": "test@vendor.com"
+}
+
+### 2. Vendor creates product — should be 201
+POST http://localhost:8080/api/v1/products
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ2ZW5kb3JAamV3ZWxjYXJ0LmNvbSIsInVzZXJJZCI6NCwicm9sZSI6IlZFTkRPUiIsImlhdCI6MTc4MDc2NjU3NiwiZXhwIjoxNzgwODUyOTc2fQ.sT6lexeK0TAYs3SP5fDm0ITJBxRlAed4LzfcQQNupKBSuEcQ-YSfvObT0KJ-iD4S
+Content-Type: application/json
+
+{
+  "name": "Silver Bangle",
+  "sku": "BG001",
+  "vendorId": 1,
+  "basePrice": 500.00,
+  "sellingPrice": 450.00,
+  "metalType": "SILVER",
+  "gender": "WOMEN"
+}
+
+### 3. Public product search — no token needed
+GET http://localhost:8080/api/v1/products/search?name=gold
+
+### 4. Customer tries to deactivate product — should be 403
+PATCH http://localhost:8080/api/v1/products/1/deactivate
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJjdXN0b21lckBqZXdlbGNhcnQuY29tIiwidXNlcklkIjozLCJyb2xlIjoiQ1VTVE9NRVIiLCJpYXQiOjE3ODA3NjYwMzksImV4cCI6MTc4MDg1MjQzOX0.QchKm8hfoFwfbahexYahLILI_jIWC0ekzZLC4BKmKbauUBpbmqXEh_wGzsseJ53w

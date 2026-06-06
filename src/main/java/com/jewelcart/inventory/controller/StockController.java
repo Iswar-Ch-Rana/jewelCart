@@ -9,6 +9,7 @@ import com.jewelcart.inventory.service.StockService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,16 +26,19 @@ public class StockController {
     private final StockService stockService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','VENDOR')")
     public ResponseEntity<ApiResponse<StockResponse>> initializeStock(@Valid @RequestBody InitializeStockRequest request) {
         return ResponseEntity.ok(success("Stock initialized successfully", stockService.initializeStock(request)));
     }
 
     @PostMapping("/restock")
+    @PreAuthorize("hasAnyRole('ADMIN','VENDOR')")
     public ResponseEntity<ApiResponse<StockResponse>> restock(@Valid @RequestBody RestockRequest request) {
         return ResponseEntity.ok(success("Stock restocked successfully", stockService.restock(request)));
     }
 
     @PostMapping("/deduct")
+    @PreAuthorize("hasAnyRole('ADMIN','VENDOR')")
     public ResponseEntity<ApiResponse<StockResponse>> deductStock(@Valid @RequestBody DeductStockRequest request) {
         return ResponseEntity.ok(success("Stock deducted successfully", stockService.deductStock(request)));
     }
@@ -50,6 +54,7 @@ public class StockController {
     }
 
     @GetMapping("/low-stock")
+    @PreAuthorize("hasAnyRole('ADMIN','VENDOR')")
     public ResponseEntity<ApiResponse<List<StockResponse>>> getLowStockItems() {
         return ResponseEntity.ok(success("Low stock items retrieved successfully", stockService.getLowStockItems()));
     }

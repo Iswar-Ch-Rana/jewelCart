@@ -66,6 +66,7 @@ public class VendorController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')") // only admins can update vendors
     public ResponseEntity<ApiResponse<VendorResponse>> updateVendor(
             @PathVariable Long id,
             @Valid @RequestBody UpdateVendorRequest request) {

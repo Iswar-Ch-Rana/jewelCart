@@ -34,7 +34,7 @@ public class ProductController {
 
     // POST /v1/products → 201 Created
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'VENDOR')") // admins and vendors can create products
+    @PreAuthorize("hasAnyRole('ADMIN','VENDOR')") // admins and vendors can create products
     public ResponseEntity<ApiResponse<ProductResponse>> createProduct(@Valid @RequestBody CreateProductRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(success("Product created successfully", productService.createProduct(request)));
     }
@@ -101,12 +101,14 @@ public class ProductController {
 
     // PUT /v1/products/{id}
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','VENDOR')")
     public ResponseEntity<ApiResponse<ProductResponse>> updateProduct(@PathVariable Long id, @Valid @RequestBody UpdateProductRequest request) {
         return ResponseEntity.ok(success("Product updated successfully", productService.updateProduct(id, request)));
     }
 
     // PATCH /v1/products/{id}/deactivate → 204 No Content
     @PatchMapping("/{id}/deactivate")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deactivateProduct(@PathVariable Long id) {
         productService.deactivateProduct(id);
         return ResponseEntity.noContent().build();

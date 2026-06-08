@@ -1,0 +1,9 @@
+ALTER TABLE orders
+    ADD COLUMN created_by VARCHAR(100),
+    ADD COLUMN updated_by VARCHAR(100);
+
+ALTER TABLE order_items
+    ADD COLUMN created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    ADD COLUMN updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    ADD COLUMN created_by VARCHAR(100),
+    ADD COLUMN updated_by VARCHAR(100);

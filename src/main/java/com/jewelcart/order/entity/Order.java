@@ -61,4 +61,5 @@ public class Order extends BaseEntity {
             orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<OrderItem> items = new ArrayList<>();
+
 }

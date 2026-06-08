@@ -51,4 +51,5 @@ public class OrderItem extends BaseEntity {
 
     @Column(name = "total_price", nullable = false, precision = 14, scale = 2)
     private BigDecimal totalPrice;
+
 }

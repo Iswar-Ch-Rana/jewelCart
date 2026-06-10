@@ -1,5 +1,6 @@
 package com.jewelcart.common.config;
 
+import com.jewelcart.common.util.SecurityUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -11,9 +12,14 @@ public class AuditConfig {
 
     @Bean
     public AuditorAware<String> auditorProvider() {
-        // Phase 1: return system user (no auth yet)
-        // Phase 2: return logged-in username from SecurityContext
-        return () -> Optional
-                .of("system");
+        // return logged-in username from SecurityContext
+        return () -> {
+            try {
+                return Optional.of(SecurityUtils.getCurrentUserEmail());
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        };
     }
+
 }

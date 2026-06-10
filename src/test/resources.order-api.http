@@ -1,0 +1,27 @@
+### Place order
+POST http://localhost:8080/api/v1/orders
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ2ZW5kb3JAamV3ZWxjYXJ0LmNvbSIsInVzZXJJZCI6NCwicm9sZSI6IlZFTkRPUiIsImlhdCI6MTc4MTExMjU0MiwiZXhwIjoxNzgxMTk4OTQyfQ.p6-q9gbdUEEZeJxZo6UC7hKXXLLgDeM_hZP9P76IThkIjQRoszqnFJ3gFZPpXkH4
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 2
+    }
+  ],
+  "shippingAddress": "123 Main St, Hyderabad"
+}
+
+### Get my orders
+GET http://localhost:8080/api/v1/orders/my-orders
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ2ZW5kb3JAamV3ZWxjYXJ0LmNvbSIsInVzZXJJZCI6NCwicm9sZSI6IlZFTkRPUiIsImlhdCI6MTc4MTExMjU0MiwiZXhwIjoxNzgxMTk4OTQyfQ.p6-q9gbdUEEZeJxZo6UC7hKXXLLgDeM_hZP9P76IThkIjQRoszqnFJ3gFZPpXkH4
+
+### Admin updates status
+PATCH http://localhost:8080/api/v1/orders/1/status
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhZG1pbkBqZXdlbGNhcnQuY29tIiwidXNlcklkIjoyLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3ODExMTI1OTgsImV4cCI6MTc4MTE5ODk5OH0.H5B_lepjfMYPobgGekPZ7auU9BcGW9B_T5JJbUCZl3TxeJOT9qZSKk2IbhievG35
+Content-Type: application/json
+
+{
+  "status": "CONFIRMED"
+}

@@ -97,4 +97,14 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(error("Authentication required — please login"));
     }
+
+    // 502 — bad gateway, i.e. upstream service (payment gateway) failed
+    @ExceptionHandler(PaymentGatewayException.class)
+    public ResponseEntity<ApiResponse<Void>> handlePaymentGateway(
+            PaymentGatewayException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_GATEWAY)  // 502 — upstream service failed
+                .body(error(ex.getMessage()));
+    }
+
 }

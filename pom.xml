@@ -64,6 +64,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
+			<version>42.7.11</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -93,21 +94,36 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.12.6</version>
+			<version>0.13.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.12.6</version>
+			<version>0.13.0</version>
 			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
-			<version>0.12.6</version>
+			<version>0.13.0</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Razorpay Java SDK -->
+		<dependency>
+			<groupId>com.razorpay</groupId>
+			<artifactId>razorpay-java</artifactId>
+			<version>1.4.9</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- .env file support — similar to Node.js dotenv -->
+		<dependency>
+			<groupId>io.github.cdimascio</groupId>
+			<artifactId>dotenv-java</artifactId>
+			<version>3.0.0</version>
 		</dependency>
 	</dependencies>
 

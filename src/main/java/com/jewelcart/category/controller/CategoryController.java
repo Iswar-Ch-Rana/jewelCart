@@ -6,6 +6,9 @@ import com.jewelcart.category.dto.CreateCategoryRequest;
 import com.jewelcart.category.dto.UpdateCategoryRequest;
 import com.jewelcart.category.service.CategoryService;
 import com.jewelcart.common.dto.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,10 +23,17 @@ import static com.jewelcart.common.dto.ApiResponse.success;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/categories")
+@Tag(name = "Categories", description = "Category management APIs")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @Operation(summary = "Create a new category")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Category created"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid request"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Parent category not found")
+    })
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(
@@ -34,6 +44,11 @@ public class CategoryController {
                 .body(success("Category created successfully", categoryService.createCategory(request)));
     }
 
+    @Operation(summary = "Get category by ID")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Category found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Category not found")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoryResponse>> getCategoryById(
             @PathVariable Long id) {
@@ -42,6 +57,10 @@ public class CategoryController {
                 success("Category retrieved successfully", categoryService.getCategoryById(id)));
     }
 
+    @Operation(summary = "Get all categories as tree", description = "Returns full category hierarchy — root nodes with nested children")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Category tree retrieved")
+    })
     @GetMapping
     public ResponseEntity<ApiResponse<List<CategoryTreeResponse>>> getAllCategoriesAsTree() {
 
@@ -49,6 +68,12 @@ public class CategoryController {
                 success("Categories retrieved successfully", categoryService.getAllCategoriesAsTree()));
     }
 
+    @Operation(summary = "Update a category")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Category updated"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Category not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid request or circular parent reference")
+    })
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(
@@ -59,6 +84,11 @@ public class CategoryController {
                 success("Category updated successfully", categoryService.updateCategory(id, request)));
     }
 
+    @Operation(summary = "Deactivate a category", description = "Soft delete — sets is_active to false")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Category deactivated"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Category not found")
+    })
     @PatchMapping("/{id}/deactivate")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deactivateCategory(

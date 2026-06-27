@@ -1,0 +1,21 @@
+# modules/ec2/variables.tf
+variable "project_name"                  { type = string }
+variable "environment"                   { type = string }
+variable "instance_type"                 { type = string }
+variable "key_name"                      { type = string }
+variable "security_group_id"             { type = string }
+variable "iam_instance_profile"          { type = string }
+variable "ecr_registry"                  { type = string }
+variable "ecr_repository"                { type = string }
+variable "aws_region"                    { type = string }
+variable "subnet_id"                     { type = string }
+variable "ssm_db_url_param"              { type = string }
+variable "ssm_db_username_param"         { type = string }
+variable "ssm_db_password_param"         { type = string }
+variable "ssm_jwt_secret_param"          { type = string }
+variable "ssm_razorpay_key_id_param"     { type = string }
+variable "ssm_razorpay_key_secret_param" { type = string }
+variable "ssm_razorpay_webhook_param"    { type = string }
+variable "grafana_remote_write_url"      { type = string }
+variable "grafana_username"              { type = string }
+variable "ssm_grafana_api_token_param"   { type = string }

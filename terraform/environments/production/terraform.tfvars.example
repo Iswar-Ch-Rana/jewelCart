@@ -1,0 +1,43 @@
+# ─── terraform.tfvars.example ─────────────────────────────────────────────────
+#
+# COPY THIS FILE: cp terraform.tfvars.example terraform.tfvars
+# FILL IN YOUR VALUES in terraform.tfvars
+# NEVER COMMIT terraform.tfvars to git (add to .gitignore)
+#
+# This example file is safe to commit — it has no real secrets.
+
+# ─── AWS ──────────────────────────────────────────────────────────────────────
+aws_region   = "ap-south-2"
+environment  = "production"
+project_name = "jewelcart"
+
+# ─── NETWORKING ───────────────────────────────────────────────────────────────
+# Find in AWS Console → VPC → Your VPCs
+vpc_id = "vpc-xxxxxxxxxxxxxxxxx"
+
+# Find in AWS Console → VPC → Subnets
+# Need at least 2 subnets in different availability zones for RDS
+subnet_ids = ["subnet-xxxxxxxxxxxxxxxxx", "subnet-yyyyyyyyyyyyyyyyy"]
+
+# ─── EC2 ──────────────────────────────────────────────────────────────────────
+ec2_instance_type = "t3.micro"
+ec2_key_name      = "jewelcart-key"   # must match key pair name in AWS Console
+
+# ─── RDS ──────────────────────────────────────────────────────────────────────
+rds_instance_class = "db.t3.micro"
+db_name            = "jewelcart_db"
+db_username        = "jewelcart_user"
+db_password        = "REPLACE_WITH_STRONG_PASSWORD"   # min 8 chars
+
+# ─── SECRETS ──────────────────────────────────────────────────────────────────
+# These go into AWS Parameter Store as SecureString (encrypted)
+jwt_secret              = "REPLACE_WITH_YOUR_JWT_SECRET_HEX_KEY"
+razorpay_key_id         = "rzp_test_REPLACE_WITH_YOUR_KEY"
+razorpay_key_secret     = "REPLACE_WITH_YOUR_RAZORPAY_SECRET"
+razorpay_webhook_secret = "REPLACE_WITH_YOUR_WEBHOOK_SECRET"
+
+# ─── GRAFANA CLOUD MONITORING ─────────────────────────────────────────────────
+# Grafana Cloud → your stack → Prometheus → Remote Write details
+grafana_remote_write_url = "https://prometheus-prod-XX-prod-REGION.grafana.net/api/prom/push"
+grafana_username         = "REPLACE_WITH_YOUR_GRAFANA_USERNAME"   # numeric ID
+grafana_api_token        = "REPLACE_WITH_YOUR_GRAFANA_API_TOKEN"  # glc_eyJ...

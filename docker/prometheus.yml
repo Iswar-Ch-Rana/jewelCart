@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'jewelcart'
+    metrics_path: '/api/actuator/prometheus'
+    static_configs:
+      - targets: ['172.17.0.1:8080']
+        labels:                          # ← labels goes under static_configs, not scrape_configs
+          environment: 'local'
+          application: 'jewelcart'

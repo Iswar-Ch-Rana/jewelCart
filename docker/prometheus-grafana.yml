@@ -1,0 +1,36 @@
+services:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: jewelcart_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Linux fix
+    networks:
+      - jewelcart_network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: jewelcart_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - jewelcart_network
+
+volumes:
+  grafana_data:
+
+networks:
+  jewelcart_network:
+    external: true
+    name: docker_jewelcart_network

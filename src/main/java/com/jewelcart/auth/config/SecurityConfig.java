@@ -47,6 +47,9 @@ public class SecurityConfig {
                         .requestMatchers("/v1/auth/**").permitAll()         // register, login
                         .requestMatchers(HttpMethod.GET, "/v1/products/**").permitAll() // browse products
                         .requestMatchers(HttpMethod.GET, "/v1/categories/**").permitAll() // browse categories
+                        .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
+                        .requestMatchers("/actuator/info").permitAll()
                         .requestMatchers("/v1/payments/webhook").permitAll()  // allow webhook url
                         .requestMatchers("/actuator/health").permitAll()    // health check
 

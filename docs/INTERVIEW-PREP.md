@@ -177,3 +177,65 @@ Java version       → 21
 Spring Boot        → 3.5.14
 Spring Security    → 6.5.10
 ```
+
+---
+
+## DevOps Questions
+
+**Q: Walk me through your CI/CD pipeline.**
+
+*"Every push to main triggers two GitHub Actions jobs. Job 1 spins up a PostgreSQL service container, compiles the code, and runs tests. If tests pass, Job 2 builds a multi-stage Docker image — Maven builds the JAR in one stage, then only the JRE and JAR go into the final image. The image is tagged with the commit SHA and pushed to AWS ECR. On EC2, we pull the latest image and restart the container with secrets injected from Parameter Store. Flyway runs migrations automatically on startup."*
+
+---
+
+**Q: Why Docker for deployment?**
+
+*"Docker packages the application with its runtime environment — Java 21, configs, dependencies. This eliminates the 'works on my machine' problem. The same image runs identically on my laptop, GitHub Actions, and AWS EC2. Multi-stage build keeps the production image at 276MB — the builder stage with Maven never makes it into production. Non-root user adds another security layer."*
+
+---
+
+**Q: How do you manage secrets on AWS EC2?**
+
+*"We use AWS Parameter Store with SecureString type — secrets are encrypted at rest using AWS KMS. EC2 reads them at container startup via the AWS CLI. The EC2 has an IAM Role that grants read-only access to Parameter Store — no credentials are stored on the server. If the server is compromised, there are no permanent keys to steal — the IAM Role provides temporary rotating credentials automatically."*
+
+---
+
+**Q: What is an IAM Role and why use it instead of IAM User on EC2?**
+
+*"IAM User has permanent access keys that you download and store. IAM Role has no permanent keys — AWS provides temporary credentials that rotate automatically. EC2 can assume an IAM Role, so it gets permissions without storing any credentials on disk. If someone hacks the server, they can't steal permanent AWS credentials — the temporary credentials expire in an hour and are tied to the specific EC2 instance."*
+
+---
+
+**Q: How does GitHub Actions authenticate to AWS?**
+
+*"We store AWS access keys as GitHub Secrets — AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY. The pipeline references them as `${{ secrets.AWS_ACCESS_KEY_ID }}` — never hardcoded in the yaml file. The IAM User has minimal permissions — only ECR push/pull. GitHub Actions uses these to login to ECR and push the Docker image."*
+
+---
+
+**Q: What happens if your EC2 crashes?**
+
+*"The Docker container has `--restart always` flag — it restarts automatically if it crashes. If the EC2 instance itself crashes and restarts, Docker starts automatically (systemctl enable docker), and the container restarts because of the restart policy. For full EC2 failure, Phase 5 adds an Auto Scaling Group — AWS automatically launches a replacement EC2 and pulls the latest image from ECR."*
+
+---
+
+**Q: How do database migrations work in production?**
+
+*"Flyway runs automatically on application startup. It connects to RDS, checks the flyway_schema_history table, and runs any new migration files in version order. If a migration fails, the app fails to start — preventing a broken app from running against an incomplete schema. This means deployments are atomic — either the migration succeeds and the app starts, or both fail and the old version keeps running."*
+
+---
+
+**Q: How do you handle zero-downtime deployment?**
+
+*"Currently we have brief downtime during container restart — typically 10-15 seconds. Phase 5 fixes this with a blue-green deployment: run two EC2 instances (blue=current, green=new), deploy to green, test, then switch the load balancer to green. If green fails, switch back to blue instantly. Kubernetes rolling updates handle this automatically — gradually replacing old pods with new ones."*
+
+---
+
+**Q: What does your health check endpoint return?**
+
+*"Spring Actuator exposes `/actuator/health` which checks: database connectivity (PostgreSQL via HikariCP), disk space, and ping. Returns `{status: UP}` when all checks pass. Docker uses this for the HEALTHCHECK instruction — the container is only marked healthy when the endpoint returns 200. Kubernetes uses the same endpoint for liveness and readiness probes."*
+
+---
+
+**Q: How would you scale JewelCart to handle 10x traffic?**
+
+*"Horizontal scaling: add more EC2 instances behind an Application Load Balancer. Since our app is stateless (JWT authentication, no server-side sessions), any instance can handle any request. RDS read replicas handle increased read load — Spring's `@Transactional(readOnly=true)` routes to replicas automatically. For extreme scale: Redis caching for product catalog, Kafka for async order processing, and Kubernetes for automatic pod scaling based on CPU/memory metrics."*

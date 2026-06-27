@@ -82,6 +82,11 @@ jobs:
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
           docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
 
+      - name: Ensure ECR repository exists
+        run: |
+          aws ecr describe-repositories --repository-names "${{ secrets.ECR_REPOSITORY }}" --region "${{ secrets.AWS_REGION }}" || \
+          aws ecr create-repository --repository-name "${{ secrets.ECR_REPOSITORY }}" --region "${{ secrets.AWS_REGION }}"
+
       - name: Build Docker image
         env:
           IMAGE_TAG: ${{ github.sha }}
